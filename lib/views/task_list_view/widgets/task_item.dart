@@ -144,25 +144,22 @@ class TaskItem extends StatelessWidget {
 
   Widget _buildSlideRight() {
     return Container(
-      color: Colors.red,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
 
-      child: Align(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(width: 20),
-            Icon(Icons.delete, color: Colors.white),
-            Text(
-              " Supprimer",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ],
-        ),
-        alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center ,
+        children: <Widget>[
+          SizedBox(width: 20),
+          Icon(Icons.delete, color: Colors.red),
+          Text(
+            " Supprimer",
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+            textAlign: TextAlign.left,
+          ),
+        ],
       ),
     );
   }
