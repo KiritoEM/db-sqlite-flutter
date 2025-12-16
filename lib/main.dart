@@ -1,6 +1,6 @@
 // ignore_for_file: unreachable_switch_default
 
-import 'package:counter_mvc/utils/colors.dart';
+import 'package:counter_mvc/constants/colors.dart';
 import 'package:counter_mvc/viewmodels/create_task_viewmodel.dart';
 import 'package:counter_mvc/viewmodels/task_list_viewmodel.dart';
 import 'package:counter_mvc/viewmodels/user_viewmodel.dart';

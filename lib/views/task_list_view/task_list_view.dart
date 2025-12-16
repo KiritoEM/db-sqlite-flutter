@@ -2,7 +2,7 @@
 
 import 'package:counter_mvc/constants/enums.dart';
 import 'package:counter_mvc/shared/snackbar.dart';
-import 'package:counter_mvc/utils/colors.dart';
+import 'package:counter_mvc/constants/colors.dart';
 import 'package:counter_mvc/shared/custom_search_bar.dart';
 import 'package:counter_mvc/viewmodels/task_list_viewmodel.dart';
 import 'package:counter_mvc/viewmodels/user_viewmodel.dart';
@@ -107,7 +107,9 @@ class _TaskListState extends State<TaskListView> {
       body: SafeArea(
         child: Column(
           children: [
-            (listvm.tasks.isNotEmpty || listvm.isSearching) ? _buildSearchBar(listvm) : Container(),
+            (listvm.tasks.isNotEmpty || listvm.isSearching)
+                ? _buildSearchBar(listvm)
+                : Container(),
             const SizedBox(height: 40),
             Expanded(child: _buildBody(listvm)),
           ],
