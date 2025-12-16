@@ -7,6 +7,7 @@ import 'package:counter_mvc/shared/custom_search_bar.dart';
 import 'package:counter_mvc/viewmodels/task_list_viewmodel.dart';
 import 'package:counter_mvc/viewmodels/user_viewmodel.dart';
 import 'package:counter_mvc/views/task_list_view/widgets/empty_task.dart';
+import 'package:counter_mvc/views/task_list_view/widgets/home_appbar.dart';
 import 'package:counter_mvc/views/task_list_view/widgets/task_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,16 @@ class _TaskListState extends State<TaskListView> {
     }
   }
 
+  Future _handleLogout(UserViewmodel userVm) async {
+    final message = await userVm.deleteUsername();
+
+    if (message != null) {
+      SnackbarUtils.showInSnackBar(context, message, type: SnackbarType.error);
+    }
+
+    Navigator.pushNamed(context, '/login');
+  }
+
   @override
   void dispose() {
     _searchFocusNode.dispose();
@@ -71,38 +82,9 @@ class _TaskListState extends State<TaskListView> {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: Text.rich(
-          TextSpan(
-            children: [
-              const TextSpan(text: 'Bonjour '),
-              TextSpan(
-                text: ' ${userVm.username}',
-                style: const TextStyle(color: Colors.green),
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: AppColors.surface,
-        actions: [
-          PopupMenuItem<String>(
-            onTap: () async {
-              final message = await userVm.deleteUsername();
-
-              if (message != null) {
-                SnackbarUtils.showInSnackBar(
-                  context,
-                  message,
-                  type: SnackbarType.error,
-                );
-              }
-
-              Navigator.pushNamed(context, '/login');
-            },
-            value: 'logout',
-            child: const Icon(Icons.logout, color: Colors.red),
-          ),
-        ],
+      appBar: HomeAppbar(
+        username: userVm.username ?? 'Utilisateur',
+        onLogout: () => {_handleLogout(userVm)},
       ),
       body: SafeArea(
         child: Column(
@@ -163,6 +145,7 @@ class _TaskListState extends State<TaskListView> {
             spacing: 20,
             children: listvm.tasks.map((task) {
               return TaskItem(
+                id: task.id,
                 title: task.title,
                 date: task.date,
                 description: task.description,
