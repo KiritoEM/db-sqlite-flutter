@@ -107,7 +107,7 @@ class _TaskListState extends State<TaskListView> {
       body: SafeArea(
         child: Column(
           children: [
-            listvm.tasks.isNotEmpty ? _buildSearchBar(listvm) : Container(),
+            (listvm.tasks.isNotEmpty || listvm.isSearching) ? _buildSearchBar(listvm) : Container(),
             const SizedBox(height: 40),
             Expanded(child: _buildBody(listvm)),
           ],
@@ -138,13 +138,22 @@ class _TaskListState extends State<TaskListView> {
       );
     }
 
+    if (listvm.tasks.isEmpty && listvm.isSearching) {
+      return const Center(
+        child: Text(
+          'Aucune tâche trouvée',
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
+
     if (listvm.tasks.isEmpty) {
       return EmptyTask(
         onAddClick: () => Navigator.of(context).pushNamed('/create'),
       );
     }
 
-    return Container(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView(
         children: [

@@ -8,16 +8,20 @@ class TaskListViewmodel extends ChangeNotifier {
   List<Task> _tasks = [];
   bool _loadingTask = false;
   String _error = '';
+  bool _isSearching = false;
 
   //getters
   List<Task> get tasks => _tasks;
   bool get loadingTask => _loadingTask;
   String get error => _error;
+  bool get isSearching => _isSearching;
 
   //get all tasks
   Future<void> getTasks({String? titleFilter}) async {
     _loadingTask = true;
     notifyListeners();
+
+    _isSearching = titleFilter != null && titleFilter.trim().isNotEmpty;
 
     final getTaskResponse = await _taskModel.getAllTasks(
       titleFilter: titleFilter,
@@ -33,6 +37,11 @@ class TaskListViewmodel extends ChangeNotifier {
     _tasks = getTaskResponse.data ?? [];
     _loadingTask = false;
     notifyListeners();
+  }
+
+  void clearSearch() {
+    _isSearching = false;
+    getTasks();
   }
 
   //Make a task done
