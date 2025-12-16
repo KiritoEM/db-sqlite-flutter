@@ -1,4 +1,4 @@
-import 'package:counter_mvc/model/api_response.dart';
+import 'package:counter_mvc/model/schemas/api_response.dart';
 import 'package:counter_mvc/model/domain-object/task.dart';
 import 'package:counter_mvc/repository/DAO/task_db_dao.dart';
 

@@ -1,6 +1,6 @@
 // ignore_for_file: void_checks, unnecessary_nullable_for_final_variable_declarations
 
-import 'package:counter_mvc/model/api_response.dart';
+import 'package:counter_mvc/model/schemas/api_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {

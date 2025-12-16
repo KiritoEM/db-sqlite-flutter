@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:counter_mvc/constants/enums.dart';
+import 'package:counter_mvc/shared/snackbar.dart';
 import 'package:counter_mvc/utils/colors.dart';
 import 'package:counter_mvc/shared/custom_search_bar.dart';
 import 'package:counter_mvc/viewmodels/task_list_viewmodel.dart';
@@ -16,6 +20,29 @@ class TaskListView extends StatefulWidget {
 
 class _TaskListState extends State<TaskListView> {
   final FocusNode _searchFocusNode = FocusNode();
+
+  Future<void> _handleMarkTaskAsDone(
+    TaskListViewmodel listvm,
+    int taskId,
+  ) async {
+    final message = await listvm.makeTaskDone(context, taskId);
+
+    if (message != null) {
+      SnackbarUtils.showInSnackBar(context, message, type: SnackbarType.error);
+    }
+  }
+
+  Future<void> _handleDeleteTask(TaskListViewmodel listvm, int taskId) async {
+    final result = await listvm.deleteTask(context, taskId);
+
+    if (result.message != null) {
+      SnackbarUtils.showInSnackBar(
+        context,
+        result.message!,
+        type: result.isSuccess ? SnackbarType.success : SnackbarType.error,
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -59,7 +86,19 @@ class _TaskListState extends State<TaskListView> {
         backgroundColor: AppColors.surface,
         actions: [
           PopupMenuItem<String>(
-            onTap: () => userVm.deleteUsername(context),
+            onTap: () async {
+              final message = await userVm.deleteUsername();
+
+              if (message != null) {
+                SnackbarUtils.showInSnackBar(
+                  context,
+                  message,
+                  type: SnackbarType.error,
+                );
+              }
+
+              Navigator.pushNamed(context, '/login');
+            },
             value: 'logout',
             child: const Icon(Icons.logout, color: Colors.red),
           ),
@@ -117,8 +156,8 @@ class _TaskListState extends State<TaskListView> {
                 date: task.date,
                 description: task.description,
                 isDone: task.isDone,
-                onCheck: (_) => listvm.makeTaskDone(context, task.id),
-                onDelete: () => listvm.deleteTask(context, task.id),
+                onCheck: (_) => _handleMarkTaskAsDone(listvm, task.id),
+                onDelete: () => _handleDeleteTask(listvm, task.id),
               );
             }).toList(),
           ),

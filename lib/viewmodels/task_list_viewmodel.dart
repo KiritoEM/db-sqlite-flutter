@@ -1,6 +1,6 @@
 import 'package:counter_mvc/model/domain-object/task.dart';
+import 'package:counter_mvc/model/schemas/vm_result.dart';
 import 'package:counter_mvc/model/task_model.dart';
-import 'package:counter_mvc/shared/snackbar.dart';
 import 'package:flutter/material.dart';
 
 class TaskListViewmodel extends ChangeNotifier {
@@ -36,7 +36,7 @@ class TaskListViewmodel extends ChangeNotifier {
   }
 
   //Make a task done
-  void makeTaskDone(BuildContext context, int taskId) async {
+  Future<String?> makeTaskDone(BuildContext context, int taskId) async {
     _loadingTask = true;
 
     final response = await _taskModel.makeTaskDone(taskId);
@@ -44,18 +44,19 @@ class TaskListViewmodel extends ChangeNotifier {
     if (response.hasError == true) {
       _loadingTask = false;
       _error = response.message!;
-      SnackbarUtils.showInSnackBar(context, response.message!);
       notifyListeners();
-      return;
+      return response.message;
     }
 
     await getTasks();
     _loadingTask = false;
     notifyListeners();
+
+    return null;
   }
 
   //Delete a task
-  void deleteTask(BuildContext context, int taskId) async {
+  Future<VmResponse> deleteTask(BuildContext context, int taskId) async {
     _loadingTask = true;
 
     final response = await _taskModel.deleteTask(taskId);
@@ -63,13 +64,14 @@ class TaskListViewmodel extends ChangeNotifier {
     if (response.hasError == true) {
       _loadingTask = false;
       _error = response.message!;
-      SnackbarUtils.showInSnackBar(context, response.message!);
       notifyListeners();
-      return;
+      return VmResponse(message: response.message);
     }
 
     await getTasks();
     _loadingTask = false;
     notifyListeners();
+
+    return VmResponse(message: response.message, isSuccess: true);
   }
 }

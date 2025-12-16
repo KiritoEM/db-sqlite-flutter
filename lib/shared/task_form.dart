@@ -1,16 +1,15 @@
 // task_form.dart
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:counter_mvc/model/domain-object/task.dart';
 import 'package:counter_mvc/model/schemas/create_task_schema.dart';
 import 'package:counter_mvc/shared/button_with_spinner.dart';
 import 'package:counter_mvc/shared/labeled_widget.dart';
+import 'package:counter_mvc/shared/snackbar.dart';
 import 'package:flutter/material.dart';
 
 class TaskForm extends StatefulWidget {
-  final Future<void> Function({
-    required CreateTaskSchema data,
-    required BuildContext context,
-  })
-  onSubmit;
+  final Future<String?> Function({required CreateTaskSchema data}) onSubmit;
   final GlobalKey<FormState> formkey;
   final bool isLoading;
   final Task? defaultFormData;
@@ -34,11 +33,17 @@ class TaskForm extends StatefulWidget {
 class _TaskFormState extends State<TaskForm> {
   late CreateTaskSchema _todoData;
 
-  void _handleSubmitForm() {
+  void _handleSubmitForm() async {
     if (widget.formkey.currentState!.validate()) {
       widget.formkey.currentState!.save();
 
-      widget.onSubmit(data: _todoData, context: context);
+      final message = await widget.onSubmit(data: _todoData);
+
+      if (message != null) {
+        SnackbarUtils.showInSnackBar(context, message);
+      }
+
+      Navigator.pushNamedAndRemoveUntil(context, '/list', (route) => false);
     }
   }
 

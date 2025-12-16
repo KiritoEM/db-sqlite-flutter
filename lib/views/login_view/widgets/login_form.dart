@@ -1,5 +1,7 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
+import 'package:counter_mvc/constants/enums.dart';
+import 'package:counter_mvc/shared/snackbar.dart';
 import 'package:counter_mvc/viewmodels/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +25,20 @@ class _LoginFormState extends State<LoginForm> {
     var _credentials = Credentials(name: '');
 
     //submit form
-    void _handleSubmitForm() {
+    void _handleSubmitForm(BuildContext context) async {
       if (_formkey.currentState!.validate()) {
         _formkey.currentState!.save();
-        userVm.saveUserName(_credentials.name, context);
+        final result = await userVm.saveUserName(_credentials.name);
+
+        if (result.isSuccess == true) {
+          SnackbarUtils.showInSnackBar(
+            context,
+            result.message!,
+            type: SnackbarType.success,
+          );
+
+          Navigator.pushNamed(context, '/list');
+        }
       }
     }
 
@@ -59,7 +71,7 @@ class _LoginFormState extends State<LoginForm> {
               width: double.infinity,
               child: ElevatedButton(
                 child: const Text('Se connecter'),
-                onPressed: () => _handleSubmitForm(),
+                onPressed: () => _handleSubmitForm(context),
               ),
             ),
           ],
